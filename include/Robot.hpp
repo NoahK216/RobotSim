@@ -1,7 +1,5 @@
 /* Noah Klein */
 
-#include <stdio.h>
-
 #ifndef ROBOT_HPP
 #define ROBOT_HPP
 
