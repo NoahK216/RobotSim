@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Automatic Header Generation
+*.vs
+headers
+ctags
+tags

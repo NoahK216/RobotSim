@@ -3,6 +3,6 @@
 #include "Robot.hpp"
 
 void masterAcceleration(Robot *robot, double actingForce);
-void masterPhysics(Robot *robot, char *buffer, int buffer_count);
+void masterPhysics(Robot *robot);
 void masterPosition(Robot *robot);
-void masterVelocity(Robot *robot, double accelMagnitude);
+void masterVelocity(Robot *robot);

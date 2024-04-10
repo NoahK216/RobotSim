@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "include/Robot.hpp"
+#include "include/sim.hpp"
 
 #include "include/debug.hpp"
 #include "include/constants.hpp"
@@ -15,26 +16,10 @@ template <typename T> int signum(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
-void masterPhysics(Robot *robot, char *buffer, int buffer_count)
+void masterPhysics(Robot *robot)
 {
-    int isW = 0;
-    int isA = 0;
-    int isS = 0;
-    int isD = 0;
-
-    /* Print the contents of the buffer if it isn't empty */
-    if(buffer_count)
-    {
-        for(int i = 0; i < buffer_count; i++)
-        {
-            // printf("%c ",buffer[i]);
-            isW = isW || buffer[i] == 'w';
-            isA = isA || buffer[i] == 'a';
-            isS = isS || buffer[i] == 's';
-            isD = isD || buffer[i] == 'd';
-        }
-        // printf("\n");
-    }
+    int isW, isA, isS, isD;
+    handleKeyboardInput(&isW, &isA, &isS, &isD);
 
     
     /* Step down the ladder of motion in physics (slew?, accel, velocity, position) */
@@ -42,7 +27,7 @@ void masterPhysics(Robot *robot, char *buffer, int buffer_count)
     robot->headingRad -= 0.1*isA - 0.1*isD;
 
     masterAcceleration(robot, isW - isS);
-    masterVelocity(robot, isW - isS);
+    masterVelocity(robot);
     masterPosition(robot);
 
 }
@@ -104,7 +89,7 @@ void masterAcceleration(Robot *robot, double actingForce)
 
 }
 
-void masterVelocity(Robot *robot, double accelMagnitude)
+void masterVelocity(Robot *robot)
 {
     /*
     VX += AX * dt

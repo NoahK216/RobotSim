@@ -22,15 +22,6 @@ Robot *robot; // Define the extern Robot declared in Robot.hpp
 char buffer[KEYBOARD_BUFFER_SIZE];
 static int buffer_count = 0;
 
-void keyHandler(int key) {
-    /* This currently only grabs the first char of event_text. shouldnt be an issue but might be */
-    char c = Fl::event_text()[0];
-    if(buffer_count < KEYBOARD_BUFFER_SIZE)
-    {
-        buffer[buffer_count] = c;
-        buffer_count++;
-    }
-}
 
 void winUpdate(void *data) {
     static unsigned i = 0;
@@ -39,7 +30,7 @@ void winUpdate(void *data) {
     Fl_Double_Window *o = (Fl_Double_Window *)data;
 
     /* Pass a pointer to the robot to masterPhysics */
-    masterPhysics((Robot*)robot, buffer, buffer_count);
+    masterPhysics(robot);
 
     /* Update the robots position after physics calulations */
     robotGUI->setPose(robot->posX, robot->posY, robot->headingRad);
@@ -72,16 +63,6 @@ int main(int argc, char **argv) {
     window->end();
     Fl::visual(FL_DOUBLE | FL_INDEX);
     window->show();
-
-    /* Add the key handler */
-    Fl::add_handler([](int event) {
-        /* Handle the event if a key was pressed that is not esc */
-        if (event == 12 && Fl::event_key() != FL_Escape) {
-            keyHandler(Fl::event_key());
-            return 1; /* Event handled */
-        }
-        return 0; /* Event not handled */
-    });
 
 
 

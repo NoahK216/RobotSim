@@ -6,7 +6,7 @@ FL_LINK_FLAGS=`fltk-config --ldflags`
 
 all: headers main
 
-main: main.o physics.o Robot.o RobotWidget.o
+main: main.o physics.o Robot.o RobotWidget.o sim.o
 	$(COMP) $(COMP_FLAGS) $^ -o $@ -L lib $(FL_LINK_FLAGS)
 
 
