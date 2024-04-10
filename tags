@@ -1,0 +1,63 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/noah/repos/RobotSim/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+%.o	makefile	/^%.o:%.cpp include\/*.hpp$/;"	t
+COMP	makefile	/^COMP=g++$/;"	m
+DEBUG	include/debug.hpp	/^#define DEBUG /;"	d
+DELTA_TIME	include/constants.hpp	/^#define DELTA_TIME /;"	d
+FL_LINK_FLAGS	makefile	/^FL_LINK_FLAGS=`fltk-config --ldflags`$/;"	m
+GRAVITY_MSS	include/constants.hpp	/^#define GRAVITY_MSS /;"	d
+KEYBOARD_BUFFER_SIZE	main.cpp	/^#define KEYBOARD_BUFFER_SIZE /;"	d	file:
+ROBOT_HPP	include/Robot.hpp	/^#define ROBOT_HPP$/;"	d
+ROBOT_WIDGET_HPP	include/RobotWidget.hpp	/^#define ROBOT_WIDGET_HPP$/;"	d
+Robot	include/Robot.hpp	/^    Robot(double x, double y, double headingDeg, double m_kg)$/;"	f	class:Robot
+Robot	include/Robot.hpp	/^class Robot{$/;"	c
+RobotWidget	RobotWidget.cpp	/^RobotWidget::RobotWidget(int x, int y, int width, int height)$/;"	f	class:RobotWidget
+RobotWidget	include/RobotWidget.hpp	/^class RobotWidget : public Fl_Widget {$/;"	c
+__anon3b5b11db0102	main.cpp	/^    Fl::add_handler([](int event) {$/;"	f	function:main	file:
+accelX	include/Robot.hpp	/^    double accelX, accelY;$/;"	m	class:Robot	typeref:typename:double
+accelY	include/Robot.hpp	/^    double accelX, accelY;$/;"	m	class:Robot	typeref:typename:double
+all	makefile	/^all: headers main$/;"	t
+angle	include/RobotWidget.hpp	/^    double angle; \/\/ Rotation angle in radians$/;"	m	class:RobotWidget	typeref:typename:double
+buffer	main.cpp	/^char buffer[KEYBOARD_BUFFER_SIZE];$/;"	v	typeref:typename:char[]
+buffer_count	main.cpp	/^static int buffer_count = 0;$/;"	v	typeref:typename:int	file:
+degrees	Robot.cpp	/^double Robot::degrees(double radians)$/;"	f	class:Robot	typeref:typename:double
+draw	RobotWidget.cpp	/^void RobotWidget::draw() {$/;"	f	class:RobotWidget	typeref:typename:void
+headers	makefile	/^headers: *.cpp tags$/;"	t
+headersclean	makefile	/^headersclean:$/;"	t
+headingDeg	Robot.cpp	/^double Robot::headingDeg()$/;"	f	class:Robot	typeref:typename:double
+headingRad	include/Robot.hpp	/^    double headingRad;$/;"	m	class:Robot	typeref:typename:double
+height	include/RobotWidget.hpp	/^    double width, height; \/\/ Dimensions of the rectangle$/;"	m	class:RobotWidget	typeref:typename:double
+keyHandler	main.cpp	/^void keyHandler(int key) {$/;"	f	typeref:typename:void
+kineticFrictionCoefficient	include/Robot.hpp	/^    double staticFrictionCoefficient, kineticFrictionCoefficient;$/;"	m	class:Robot	typeref:typename:double
+main	main.cpp	/^int main(int argc, char **argv) {$/;"	f	typeref:typename:int
+main	makefile	/^main: main.o physics.o Robot.o RobotWidget.o$/;"	t
+mass_kg	include/Robot.hpp	/^    double mass_kg;$/;"	m	class:Robot	typeref:typename:double
+masterAcceleration	physics.cpp	/^void masterAcceleration(Robot *robot, double actingForce)$/;"	f	typeref:typename:void
+masterPhysics	physics.cpp	/^void masterPhysics(Robot *robot, char *buffer, int buffer_count)$/;"	f	typeref:typename:void
+masterPosition	physics.cpp	/^void masterPosition(Robot *robot)$/;"	f	typeref:typename:void
+masterVelocity	physics.cpp	/^void masterVelocity(Robot *robot, double accelMagnitude)$/;"	f	typeref:typename:void
+normalForce	Robot.cpp	/^double Robot::normalForce()$/;"	f	class:Robot	typeref:typename:double
+posX	include/Robot.hpp	/^    double posX, posY;$/;"	m	class:Robot	typeref:typename:double
+posY	include/Robot.hpp	/^    double posX, posY;$/;"	m	class:Robot	typeref:typename:double
+radians	Robot.cpp	/^double Robot::radians(double degrees)$/;"	f	class:Robot	typeref:typename:double
+robot	main.cpp	/^Robot *robot; \/\/ Define the extern Robot declared in Robot.hpp$/;"	v	typeref:typename:Robot *
+robotGUI	main.cpp	/^RobotWidget *robotGUI; \/\/ Define the extern RobotWidget declared in RobotWidget.hpp$/;"	v	typeref:typename:RobotWidget *
+setPose	RobotWidget.cpp	/^void RobotWidget::setPose(double newX, double newY, double newAngle) {$/;"	f	class:RobotWidget	typeref:typename:void
+signum	physics.cpp	/^template <typename T> int signum(T val) {$/;"	f	typeref:typename:int
+staticFrictionCoefficient	include/Robot.hpp	/^    double staticFrictionCoefficient, kineticFrictionCoefficient;$/;"	m	class:Robot	typeref:typename:double
+tags	makefile	/^tags: *.cpp$/;"	t
+velX	include/Robot.hpp	/^    double velX, velY;$/;"	m	class:Robot	typeref:typename:double
+velY	include/Robot.hpp	/^    double velX, velY;$/;"	m	class:Robot	typeref:typename:double
+width	include/RobotWidget.hpp	/^    double width, height; \/\/ Dimensions of the rectangle$/;"	m	class:RobotWidget	typeref:typename:double
+winUpdate	main.cpp	/^void winUpdate(void *data) {$/;"	f	typeref:typename:void
+x	include/RobotWidget.hpp	/^    double x, y; \/\/ Position of the rectangle$/;"	m	class:RobotWidget	typeref:typename:double
+y	include/RobotWidget.hpp	/^    double x, y; \/\/ Position of the rectangle$/;"	m	class:RobotWidget	typeref:typename:double
