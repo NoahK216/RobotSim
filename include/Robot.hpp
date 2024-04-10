@@ -11,7 +11,7 @@ private:
     double radians(double degrees);
 
 public:
-    Robot(double x, double y, double headingDeg, double m_kg)
+    Robot(double x, double y, double headingDeg, double wheelRadius_m, double m_kg)
     {
         accelX = accelY = velX = velY = posX = posY = 0;
         
@@ -20,8 +20,11 @@ public:
         
         headingRad = radians(headingDeg);
 
-        staticFrictionCoefficient = 0.05; // The measured static coefficient of friciton between rubber and rubber 
-        kineticFrictionCoefficient = 1; // The measured kinetic coefficient of friciton between rubber and rubber 
+        staticFrictionCoefficient = 0.05;
+        kineticFrictionCoefficient = 0.008;
+        velocityDampingCoefficient = 0.05;
+
+        driveWheelRadius_m = wheelRadius_m;
 
         mass_kg = m_kg;
     }
@@ -31,6 +34,7 @@ public:
     double posX, posY;
 
     double staticFrictionCoefficient, kineticFrictionCoefficient;
+    double velocityDampingCoefficient;
 
     double mass_kg;
     double normalForce();
@@ -38,8 +42,8 @@ public:
     double headingRad;
     double headingDeg();
 
-};
+    double driveWheelRadius_m;
 
-extern Robot *robot;
+};
 
 #endif // ROBOT_HPP

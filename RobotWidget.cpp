@@ -9,12 +9,19 @@
 
 #include "include/RobotWidget.hpp"
 
-RobotWidget::RobotWidget(int x, int y, int width, int height)
-    : Fl_Widget(x, y, width, height), x(x), y(y), width(width), height(height), angle(0.0) {}
+// Constructor for RobotWidget class, representing a widget for a robot
+RobotWidget::RobotWidget(double initial_x, double initial_y, double widget_width, double widget_height)
+    : Fl_Widget(initial_x, initial_y, widget_width, widget_height), 
+      x(initial_x), 
+      y(initial_y), 
+      width(widget_width * METERS_TO_PIXELS), 
+      height(widget_height * METERS_TO_PIXELS), 
+      angle(0.0) 
+{}
 
 void RobotWidget::setPose(double newX, double newY, double newAngle) {
-    x = newX;
-    y = newY;
+    xPix = newX * METERS_TO_PIXELS;
+    yPix = newY * METERS_TO_PIXELS;
     angle = newAngle;
 }
 
@@ -44,10 +51,10 @@ void RobotWidget::draw() {
     double y4r = x4 * sinA + y4 * cosA;
 
     // Translate the rotated coordinates to the position of the rectangle
-    x1r += x; y1r += y;
-    x2r += x; y2r += y;
-    x3r += x; y3r += y;
-    x4r += x; y4r += y;
+    x1r += xPix; y1r += yPix;
+    x2r += xPix; y2r += yPix;
+    x3r += xPix; y3r += yPix;
+    x4r += xPix; y4r += yPix;
 
     // Draw the rotated rectangle
     fl_begin_complex_polygon();
@@ -58,14 +65,14 @@ void RobotWidget::draw() {
     fl_end_complex_polygon();
 
     // Draw the rotated heading indicator
-    const double triDepth = 15;
     const double triInset = 5;
-    const double triTipLength = 15;
+    const double triDepth = 2;
+    const double triTipLength = 10;
 
     fl_color(FL_RED);
     fl_begin_complex_polygon();
-    fl_vertex(x1r + triDepth * cosA - triInset * sinA, y1r + triDepth * sinA + triInset * cosA);
+    fl_vertex(x1r + triInset * cosA - triDepth * sinA, y1r + triInset * sinA + triDepth * cosA);
     fl_vertex((x1r+x2r)/2 + triTipLength * sinA, (y1r+y2r)/2 - triTipLength * cosA);
-    fl_vertex(x2r - triDepth * cosA -  triInset * sinA, y2r - triDepth * sinA + triInset * cosA);
+    fl_vertex(x2r - triInset * cosA -  triDepth * sinA, y2r - triInset * sinA + triDepth * cosA);
     fl_end_complex_polygon();
 }

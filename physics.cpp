@@ -35,10 +35,8 @@ void masterPhysics(Robot *robot)
 
 void masterAcceleration(Robot *robot, double actingForce)
 {
-    double robotSin = sin(robot->headingRad);
-    double robotCos = cos(robot->headingRad);
 
-    actingForce *= 100;
+    actingForce *= 5;
 
     /*
     AX = cos(robot->headingRad) * actingForce
@@ -56,55 +54,47 @@ void masterAcceleration(Robot *robot, double actingForce)
     }
     else 
     {
-        /* Otherwise lets take kinetic friction into account */
-        double kineticFrictionForce = robot->normalForce() * robot->kineticFrictionCoefficient;
-
-        double velocityMagnitude = sqrt(robot->velX * robot->velX + robot->velY * robot->velY);
-
-        double actingForceX = robotSin * actingForce;
-        double actingForceY = robotCos * -actingForce;
-
-        // Update the kinetic friction force as the velocity decreases
-        double frictionForceX = 0.0;
-        double frictionForceY = 0.0;
-
-        /* Calculations if there is a force acting on the robot */
-        if(actingForce)
-        {
-            frictionForceX = -(actingForceX / fabs(actingForce)) * kineticFrictionForce;
-            frictionForceY = -(actingForceY / fabs(actingForce)) * kineticFrictionForce;
-        }
-        /* Calculations if there no force acting on the robot, but the robot is moving */
-        else if(velocityMagnitude)
-        {
-            frictionForceX = -(robot->velX / velocityMagnitude) * kineticFrictionForce;
-            frictionForceY = -(robot->velY / velocityMagnitude) * kineticFrictionForce;
-        }
-
-        robot->accelX = actingForceX + frictionForceX;
-        robot->accelY = actingForceY + frictionForceY;
+        applyKineticFriction(robot, actingForce);
     }
 
-
-
 }
+
+/* Apply kinetic friction opposite the direction the robot is currently being driven */
+void applyKineticFriction(Robot *robot, double actingForce)
+{
+    double robotSin = sin(robot->headingRad);
+    double robotCos = cos(robot->headingRad);
+
+    double kineticFrictionForce = robot->normalForce() * robot->kineticFrictionCoefficient;
+
+    double actingForceX = robotSin * actingForce;
+    double actingForceY = robotCos * -actingForce;
+
+    robot->accelX = actingForceX + signum(actingForceX) * robotSin * kineticFrictionForce;
+    robot->accelY = actingForceY + signum(actingForceY) * robotCos * kineticFrictionForce;
+}
+
 
 void masterVelocity(Robot *robot)
 {
-    /*
-    VX += AX * dt
-    VY += AY * dt
-    */
+    /* Integrate acceleration over time */
     robot->velX += robot->accelX * DELTA_TIME;
     robot->velY += robot->accelY * DELTA_TIME;
+
+    applyDampingForce(robot);
 }
+
+/* Apply kinetic friction opposite the direction the robot is currently being driven */
+void applyDampingForce(Robot *robot)
+{
+    robot->velX = robot->velX * (1 - robot->velocityDampingCoefficient);
+    robot->velY = robot->velY * (1 - robot->velocityDampingCoefficient);
+}
+
 
 void masterPosition(Robot *robot)
 {
-    /*
-    X += VX * dt
-    V += VY * dt
-    */
+    /* Integrate velocity over time */
     robot->posX += robot->velX * DELTA_TIME;
     robot->posY += robot->velY * DELTA_TIME;
 }

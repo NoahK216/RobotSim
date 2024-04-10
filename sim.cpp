@@ -1,7 +1,6 @@
 /* Noah Klein */
 
 #include <FL/Fl.H>
-#include <stdio.h>
 
 #include "include/debug.hpp"
 

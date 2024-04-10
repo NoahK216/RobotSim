@@ -14,20 +14,23 @@
 
 #include "include/main.hpp"
 
-#define KEYBOARD_BUFFER_SIZE 8
 
-RobotWidget *robotGUI; // Define the extern RobotWidget declared in RobotWidget.hpp
-Robot *robot; // Define the extern Robot declared in Robot.hpp
+struct windowUpdatePackage{
+    Fl_Double_Window *window;
+    Robot *robot;
+    RobotWidget *robotGUI;
+};
 
-char buffer[KEYBOARD_BUFFER_SIZE];
-static int buffer_count = 0;
 
-
-void winUpdate(void *data) {
+void windowUpdate(void *data) {
     static unsigned i = 0;
 
     /* The loop */
-    Fl_Double_Window *o = (Fl_Double_Window *)data;
+    //Fl_Double_Window *o = (Fl_Double_Window *)data;
+    windowUpdatePackage *package = (windowUpdatePackage*)data;
+    RobotWidget *robotGUI = package->robotGUI; // Define the extern RobotWidget declared in RobotWidget.hpp
+    Robot *robot = package->robot; // Define the extern Robot declared in Robot.hpp
+
 
     /* Pass a pointer to the robot to masterPhysics */
     masterPhysics(robot);
@@ -41,31 +44,35 @@ void winUpdate(void *data) {
 
 
     /* Finally, redraw */
-    o->redraw();
-
-    /* "clear" the buffer */
-    buffer_count = 0;
+    package->window->redraw();
 
     i++;
-    Fl::add_timeout(DELTA_TIME, winUpdate, data);
+    Fl::add_timeout(DELTA_TIME, windowUpdate, data);
 }
 
 int main(int argc, char **argv) {
-    robot = new Robot(100, 100, 180, 2);
-    robotGUI = new RobotWidget(200, 200, 75, 75);
+    const double fieldLength = 10;
 
 
-
-    Fl_Double_Window *window = new Fl_Double_Window(1400, 800, "RobotSim");
+    Fl_Double_Window *window = new Fl_Double_Window(fieldLength*METERS_TO_PIXELS, fieldLength*METERS_TO_PIXELS, "RobotSim");
+    /*TODO: Make constants more accurate to real world*/ 
     
-    window->add(robotGUI);
-    Fl::add_timeout(0, winUpdate, window);
+    /* Units:   Xm Ym Hdg  WheelRadM  Mkg*/
+    Robot robot(5, 5, 180, 0.0523875, 6.8);
+
+    /* Units:            Xm Ym   Xm  Ym*/
+    RobotWidget robotGUI(5, 5, 0.4, 0.4);
+
+    /* Create a package to pass to the window timeout */
+    windowUpdatePackage package = {window, &robot, &robotGUI};
+    
+    /* Add the RobotWidget to the window */
+    window->add(&robotGUI);
+
+    Fl::add_timeout(0, windowUpdate, &package);
     window->end();
     Fl::visual(FL_DOUBLE | FL_INDEX);
     window->show();
-
-
-
 
     return Fl::run();
 }
