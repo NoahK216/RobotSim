@@ -12,4 +12,6 @@ void handleKeyboardInput(int *isW, int *isA, int *isS, int *isD)
     *isA = Fl::get_key('a') != 0;
     *isS = Fl::get_key('s') != 0;
     *isD = Fl::get_key('d') != 0;
+
+    if(0) printf("W:%d, A:%d, S:%d, D:%d\n", *isW, *isA, *isS, *isD);
 }

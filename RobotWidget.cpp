@@ -1,5 +1,6 @@
 /* Noah Klein */
 
+#include <FL/Enumerations.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Double_Window.H>
@@ -19,60 +20,115 @@ RobotWidget::RobotWidget(double initial_x, double initial_y, double widget_width
       angle(0.0) 
 {}
 
-void RobotWidget::setPose(double newX, double newY, double newAngle) {
+void RobotWidget::setPose(double newX, double newY, double newAngle)
+{
     xPix = newX * METERS_TO_PIXELS;
     yPix = newY * METERS_TO_PIXELS;
     angle = newAngle;
 }
 
-void RobotWidget::draw() {
-    fl_color(FL_BLACK);
+void RobotWidget::drawRotatedRectangle(Fl_Color color, double x_pix, double y_pix, double width_pix, double height_pix, double angle)
+{
+    fl_color(color);
 
-    // Compute the coordinates of rectangle corners
-    double x1 = -width / 2;
-    double y1 = -height / 2;
-    double x2 = width / 2;
-    double y2 = -height / 2;
-    double x3 = width / 2;
-    double y3 = height / 2;
-    double x4 = -width / 2;
-    double y4 = height / 2;
+    // Define the vertices of the rectangle
+    Point vertices[4] = {
+        {-width_pix / 2, -height_pix / 2},
+        {width_pix / 2, -height_pix / 2},
+        {width_pix / 2, height_pix / 2},
+        {-width_pix / 2, height_pix / 2}
+    };
 
     // Rotate the coordinates
     double cosA = cos(angle);
     double sinA = sin(angle);
-    double x1r = x1 * cosA - y1 * sinA;
-    double y1r = x1 * sinA + y1 * cosA;
-    double x2r = x2 * cosA - y2 * sinA;
-    double y2r = x2 * sinA + y2 * cosA;
-    double x3r = x3 * cosA - y3 * sinA;
-    double y3r = x3 * sinA + y3 * cosA;
-    double x4r = x4 * cosA - y4 * sinA;
-    double y4r = x4 * sinA + y4 * cosA;
+    for (int i = 0; i < 4; i++)
+    {
+        double x = vertices[i].x;
+        double y = vertices[i].y;
+        vertices[i].x = x * cosA - y * sinA;
+        vertices[i].y = x * sinA + y * cosA;
+    }
 
     // Translate the rotated coordinates to the position of the rectangle
-    x1r += xPix; y1r += yPix;
-    x2r += xPix; y2r += yPix;
-    x3r += xPix; y3r += yPix;
-    x4r += xPix; y4r += yPix;
+    for (int i = 0; i < 4; i++)
+    {
+        vertices[i].x += x_pix;
+        vertices[i].y += y_pix;
+    }
 
     // Draw the rotated rectangle
     fl_begin_complex_polygon();
-    fl_vertex(x1r, y1r);
-    fl_vertex(x2r, y2r);
-    fl_vertex(x3r, y3r);
-    fl_vertex(x4r, y4r);
+    for (int i = 0; i < 4; i++)
+    {
+        fl_vertex(vertices[i].x, vertices[i].y);
+    }
     fl_end_complex_polygon();
+}
 
-    // Draw the rotated heading indicator
-    const double triInset = 5;
-    const double triDepth = 2;
-    const double triTipLength = 10;
 
-    fl_color(FL_RED);
+void RobotWidget::drawRotatedTriangle(Fl_Color color, double x_pix, double y_pix, double base_pix, double height_pix, double angle)
+{
+    fl_color(color);
+
+    // Define the vertices of the triangle
+    Point vertices[3] = {
+        {0.0, -height_pix / 2}, // Top vertex
+        {-base_pix / 2, height_pix / 2}, // Bottom left vertex
+        {base_pix / 2, height_pix / 2} // Bottom right vertex
+    };
+
+    // Rotate the coordinates
+    double cosA = cos(angle);
+    double sinA = sin(angle);
+    for (int i = 0; i < 3; i++) {
+        double x = vertices[i].x;
+        double y = vertices[i].y;
+        vertices[i].x = x * cosA - y * sinA;
+        vertices[i].y = x * sinA + y * cosA;
+    }
+
+    // Translate the rotated coordinates to the position of the triangle
+    for (int i = 0; i < 3; i++)
+    {
+        vertices[i].x += x_pix;
+        vertices[i].y += y_pix;
+    }
+
+    // Draw the rotated triangle
     fl_begin_complex_polygon();
-    fl_vertex(x1r + triInset * cosA - triDepth * sinA, y1r + triInset * sinA + triDepth * cosA);
-    fl_vertex((x1r+x2r)/2 + triTipLength * sinA, (y1r+y2r)/2 - triTipLength * cosA);
-    fl_vertex(x2r - triInset * cosA -  triDepth * sinA, y2r - triInset * sinA + triDepth * cosA);
+    for (int i = 0; i < 3; i++)
+    {
+        fl_vertex(vertices[i].x, vertices[i].y);
+    }
     fl_end_complex_polygon();
+}
+
+RobotWidget::Point RobotWidget::rotatedOffsetPoint(double xPix, double yPix, double angle, double xOffset, double yOffset)
+{
+    return {xPix + cos(angle) * xOffset - sin(angle) * yOffset, yPix + sin(angle) * xOffset + cos(angle) * yOffset};
+}
+
+void RobotWidget::draw()
+{
+    const double cosA = cos(angle);
+    const double sinA = sin(angle);
+
+    const double wheelOffsetPix = 0.1524 * METERS_TO_PIXELS;
+
+    Point rotatedPoint;
+    
+    /* Draw the robot */
+    drawRotatedRectangle(FL_BLACK, xPix, yPix, width, height, angle);
+
+    /* Draw the heading indicator */
+    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, 0, -height/2 - 3);
+    drawRotatedTriangle(FL_RED, rotatedPoint.x, rotatedPoint.y, width - 10, 10, angle);
+
+    /* Draw the wheels */
+    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, wheelOffsetPix, 0);
+    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height-12, angle);
+
+    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, -wheelOffsetPix, 0);
+    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height-12, angle);
 }

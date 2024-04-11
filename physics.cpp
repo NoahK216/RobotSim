@@ -24,14 +24,45 @@ void masterPhysics(Robot *robot)
     
     /* Step down the ladder of motion in physics (slew?, accel, velocity, position) */
     
-    robot->headingRad -= 0.1*isA - 0.1*isD;
-
-    masterAcceleration(robot, isW - isS);
-    masterVelocity(robot);
-    masterPosition(robot);
+    //robot->headingRad -= 0.1*isA - 0.1*isD;
+    wheelAcceleration(robot, isA - isW, isD - isS);
+    //masterVelocity(robot);
+    //masterPosition(robot);
 
 }
 
+void wheelAcceleration(Robot *robot, double drivePowerLeft, double drivePowerRight)
+{
+
+    double accelLeft = robot->wheelAngularAcceleration * drivePowerLeft;
+    double accelRight = robot->wheelAngularAcceleration * drivePowerRight;
+
+    robot->velLeftDt += accelLeft * DELTA_TIME * robot->driveWheelRadius_m;
+    robot->velRightDt += accelRight  * DELTA_TIME * robot->driveWheelRadius_m;
+
+    applyDampingForce(robot);
+
+    const double wheelDistFromCenter = 0.1524;
+
+    double velocity = (robot->velRightDt + robot->velLeftDt)/2.0;
+    double angularVel = (robot->velRightDt - robot->velLeftDt)/wheelDistFromCenter;
+ 
+    robot->velX = velocity * sin(robot->headingRad);
+    robot->velY = -velocity * cos(robot->headingRad);
+
+    robot->headingRad += angularVel * DELTA_TIME;
+    robot->posX += robot->velX * DELTA_TIME;
+    robot->posY += robot->velY * DELTA_TIME;
+
+    printf("%.2f %.2f\n", velocity, angularVel);
+
+    /*
+    AX = cos(robot->headingRad) * actingForce
+    AY = sin(robot->headingRad) * actingForce
+    */
+
+
+}
 
 void masterAcceleration(Robot *robot, double actingForce)
 {
@@ -87,8 +118,8 @@ void masterVelocity(Robot *robot)
 /* Apply kinetic friction opposite the direction the robot is currently being driven */
 void applyDampingForce(Robot *robot)
 {
-    robot->velX = robot->velX * (1 - robot->velocityDampingCoefficient);
-    robot->velY = robot->velY * (1 - robot->velocityDampingCoefficient);
+    robot->velLeftDt = robot->velLeftDt * (1 - robot->velocityDampingCoefficient);
+    robot->velRightDt = robot->velRightDt * (1 - robot->velocityDampingCoefficient);
 }
 
 

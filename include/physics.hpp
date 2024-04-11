@@ -8,3 +8,4 @@ void masterPosition(Robot *robot);
 void masterVelocity(Robot *robot);
 void applyKineticFriction(Robot *robot, double actingForce);
 void applyDampingForce(Robot *robot);
+void wheelAcceleration(Robot *robot, double drivePowerLeft, double drivePowerRight);
