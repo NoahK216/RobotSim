@@ -37,8 +37,8 @@ void windowUpdate(void *data) {
 
     /* Update the robots position after physics calulations */
     robotGUI->setPose(robot->posX, robot->posY, robot->headingRad);
-    if(DEBUG) printf("Acceleration\tX: %5.2f\tY:%5.2f\nVelocity\tX: %6.2f\tY:%6.2f\nPosition\tX: %6.2f\tY:%6.2f\n\n"
-        , robot->accelX, robot->accelY
+    if(DEBUG) printf("Acceleration\tL: %6.2f\tR: %6.2f\nVelocity\tX: %6.2f\tY: %6.2f\nPosition\tX: %6.2f\tY: %6.2f\n\n"
+        , robot->accelWheelLeft, robot->accelWheelRight
         , robot->velX, robot->velY
         , robot->posX, robot->posY);
 

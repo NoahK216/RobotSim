@@ -1,6 +1,7 @@
 /* Noah Klein */
 
 #include <math.h>
+#include <stdio.h>
 
 #include "include/debug.hpp"
 #include "include/constants.hpp"
@@ -25,4 +26,17 @@ double Robot::normalForce()
 double Robot::headingDeg()
 {
     return degrees(headingRad);
+}
+
+double Robot::motorCurrentDraw(int milliVolts)
+{
+    /* See https://www.desmos.com/calculator/be4rzwy7sd for more */
+
+    static const double f1 = 2.5;
+    static const double k = 70;
+    static const double a = 0.6;
+
+    const double pctVolt = abs(milliVolts) / 12000.0;
+
+    return f1 + (1 + tanh(k*(pctVolt-a)))/2 * ((-4.125 * pctVolt) + 4.975 - f1);
 }

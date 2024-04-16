@@ -1,11 +1,9 @@
 /* Noah Klein */
 
-#include "Robot.hpp"
-
-void masterAcceleration(Robot *robot, double actingForce);
-void masterPhysics(Robot *robot);
-void masterPosition(Robot *robot);
-void masterVelocity(Robot *robot);
-void applyKineticFriction(Robot *robot, double actingForce);
 void applyDampingForce(Robot *robot);
-void wheelAcceleration(Robot *robot, double drivePowerLeft, double drivePowerRight);
+void applyKineticFriction(Robot *robot, double actingForce);
+void masterMotorTorque(Robot *robot, int mVoltsLeft, int mVoltsRight);
+void masterPhysics(Robot *robot);
+void masterPose(Robot *robot);
+template <typename T> int signum(T val) ;
+void wheelVelocity(Robot *robot);

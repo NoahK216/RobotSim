@@ -22,73 +22,21 @@ void masterPhysics(Robot *robot)
     handleKeyboardInput(&isW, &isA, &isS, &isD);
 
     
-    /* Step down the ladder of motion in physics (slew?, accel, velocity, position) */
+    /* Step down the ladder of motion in physics (acceleration, velocity, position) */
     
-    //robot->headingRad -= 0.1*isA - 0.1*isD;
-    wheelAcceleration(robot, isA - isW, isD - isS);
-    //masterVelocity(robot);
-    //masterPosition(robot);
+    masterMotorTorque(robot, isA - isW, isD - isS);
+    wheelVelocity(robot);
+    masterPose(robot);
 
 }
 
-void wheelAcceleration(Robot *robot, double drivePowerLeft, double drivePowerRight)
+void masterMotorTorque(Robot *robot, int mVoltsLeft, int mVoltsRight)
 {
-
-    double accelLeft = robot->wheelAngularAcceleration * drivePowerLeft;
-    double accelRight = robot->wheelAngularAcceleration * drivePowerRight;
-
-    robot->velLeftDt += accelLeft * DELTA_TIME * robot->driveWheelRadius_m;
-    robot->velRightDt += accelRight  * DELTA_TIME * robot->driveWheelRadius_m;
-
-    applyDampingForce(robot);
-
-    const double wheelDistFromCenter = 0.1524;
-
-    double velocity = (robot->velRightDt + robot->velLeftDt)/2.0;
-    double angularVel = (robot->velRightDt - robot->velLeftDt)/wheelDistFromCenter;
- 
-    robot->velX = velocity * sin(robot->headingRad);
-    robot->velY = -velocity * cos(robot->headingRad);
-
-    robot->headingRad += angularVel * DELTA_TIME;
-    robot->posX += robot->velX * DELTA_TIME;
-    robot->posY += robot->velY * DELTA_TIME;
-
-    printf("%.2f %.2f\n", velocity, angularVel);
-
-    /*
-    AX = cos(robot->headingRad) * actingForce
-    AY = sin(robot->headingRad) * actingForce
-    */
-
-
+    /* angularAccel = torque/intertia */
+    robot->accelWheelLeft = robot->motorCurrentDraw(mVoltsLeft) / robot->wheelInertia;
+    robot->accelWheelRight = robot->motorCurrentDraw(mVoltsRight) / robot->wheelInertia;
 }
 
-void masterAcceleration(Robot *robot, double actingForce)
-{
-
-    actingForce *= 5;
-
-    /*
-    AX = cos(robot->headingRad) * actingForce
-    AY = sin(robot->headingRad) * actingForce
-    */
-
-    double staticFrictionForce = robot->normalForce() * robot->staticFrictionCoefficient;
-
-    /* If the robot was at rest and the magnitude of acceleration doesn't overcome static friction, leave */
-    if(!robot->velX && !robot->velY && (actingForce < staticFrictionForce))
-    {
-        robot->accelX = 0;
-        robot->accelY = 0;
-        actingForce = 0;
-    }
-    else 
-    {
-        applyKineticFriction(robot, actingForce);
-    }
-
-}
 
 /* Apply kinetic friction opposite the direction the robot is currently being driven */
 void applyKineticFriction(Robot *robot, double actingForce)
@@ -106,13 +54,23 @@ void applyKineticFriction(Robot *robot, double actingForce)
 }
 
 
-void masterVelocity(Robot *robot)
+void wheelVelocity(Robot *robot)
 {
     /* Integrate acceleration over time */
-    robot->velX += robot->accelX * DELTA_TIME;
-    robot->velY += robot->accelY * DELTA_TIME;
+    robot->velLeftDt += robot->accelWheelLeft * DELTA_TIME * robot->driveWheelRadius_m;
+    robot->velRightDt += robot->accelWheelRight  * DELTA_TIME * robot->driveWheelRadius_m;
+
+    int mVolts = robot->velLeftDt*10000;
+    printf("MVolts: %d\tAmps: %.2f\n", mVolts, robot->motorCurrentDraw(mVolts));
 
     applyDampingForce(robot);
+
+
+    robot->velLinear = (robot->velRightDt + robot->velLeftDt)/2.0;
+    robot->velAngular = (robot->velRightDt - robot->velLeftDt)/robot->wheelDistFromCenter;
+ 
+    robot->velX = robot->velLinear * sin(robot->headingRad);
+    robot->velY = -robot->velLinear * cos(robot->headingRad);
 }
 
 /* Apply kinetic friction opposite the direction the robot is currently being driven */
@@ -123,9 +81,10 @@ void applyDampingForce(Robot *robot)
 }
 
 
-void masterPosition(Robot *robot)
+void masterPose(Robot *robot)
 {
     /* Integrate velocity over time */
+    robot->headingRad += robot->velAngular * DELTA_TIME;
     robot->posX += robot->velX * DELTA_TIME;
     robot->posY += robot->velY * DELTA_TIME;
 }

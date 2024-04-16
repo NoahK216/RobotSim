@@ -26,10 +26,11 @@ public:
 
         wheelInertia = M_PI * wheelRadius_m / 4.0; // pi*R/4
 
-        wheelAngularAcceleration = motorTorqueCoefficient * mechEfficiencyCoefficient / wheelInertia;
+        //wheelAngularAcceleration = motorTorqueCoefficient * mechEfficiencyCoefficient / wheelInertia;
     }
 
-    double accelLeftDt, accelRightDt;
+    double accelWheelLeft, accelWheelRight;
+    double velLinear, velAngular;
     double velLeftDt, velRightDt;
 
     double accelX, accelY;
@@ -40,12 +41,14 @@ public:
     const double kineticFrictionCoefficient = 0.008;
     const double velocityDampingCoefficient = 0.05;
 
-    const double motorTorqueCoefficient = 0.8; // Motor torque constant (Nm/A)
-    const double mechEfficiencyCoefficient = 0.95; // Mechanical efficiency of transmission system
+    const double motorTorqueCoefficient = 1.1; // Motor torque constant (Nm/A)
+    const double mechEfficiencyCoefficient = 0.85; // Mechanical efficiency of transmission system
+
+    const double wheelDistFromCenter = 0.1524;
 
     double wheelInertia;
 
-    double wheelAngularAcceleration;
+    //double wheelAngularAcceleration;
 
     double mass_kg;
     double normalForce();
@@ -54,6 +57,13 @@ public:
     double headingDeg();
 
     double driveWheelRadius_m;
+
+    double motorCurrentDraw(int milliVolts);
+    
+
+    //double (double rpm);
+
+    /* If it gets this deep, at some point incorporate the fact that there is more energy loss with higher gearing cartridges, actually measuring that might be tricky */
 
 };
 

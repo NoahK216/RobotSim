@@ -9,7 +9,7 @@ readonly HEADER_DEST="include/"
 readonly CPP_MODE=true # Set to true for C++ mode, false for C mode
 
 # Define an array of filenames to exclude from automatic header generation
-declare -a EXCLUDE_FILES=("Robot.nvs" "RobotWidget.nvs" "physics.nvs")
+declare -a EXCLUDE_FILES=("Robot.nvs" "RobotWidget.nvs")
 
 file_extension="c"
 header_extension="h"
