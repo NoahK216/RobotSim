@@ -8,14 +8,17 @@
 
 #include <math.h>
 
+#include "../include/constants.hpp"
 #include "../include/RobotWidget.hpp"
 
+
 // Constructor for RobotWidget class, representing a widget for a robot
-RobotWidget::RobotWidget(Robot *robot, double initial_x, double initial_y, double widget_width, double widget_height)
-    : Fl_Widget(initial_x, initial_y, widget_width, widget_height), 
+RobotWidget::RobotWidget(Robot *robot, double initial_x, double initial_y, double widget_width, double widget_height, bool showDistanceSensorLines)
+    : Fl_Widget(robot->xPos_pix(), robot->yPos_pix(), widget_width, widget_height), 
       robot(robot),
-      widthPix(widget_width * METERS_TO_PIXELS), 
-      heightPix(widget_height * METERS_TO_PIXELS)
+      width_pix(widget_width * METERS_TO_PIXELS), 
+      height_pix(widget_height * METERS_TO_PIXELS),
+      showDistanceSensorLines(showDistanceSensorLines)
 {}
 
 void RobotWidget::drawRotatedRectangle(Fl_Color color, double x_pix, double y_pix, double width_pix, double height_pix, double angle)
@@ -102,28 +105,36 @@ RobotWidget::Point RobotWidget::rotatedOffsetPoint(double xPix, double yPix, dou
 
 void RobotWidget::draw()
 {
-    xPix = this->robot->posX * METERS_TO_PIXELS;
-    yPix = this->robot->posY * METERS_TO_PIXELS;
-    angle = this->robot->headingRad;
+    xPos_pix = this->robot->xPos_pix();
+    yPos_pix = this->robot->yPos_pix();
+    angle_rad = this->robot->headingRad;
 
-    const double cosA = cos(angle);
-    const double sinA = sin(angle);
+    const double cosA = cos(angle_rad);
+    const double sinA = sin(angle_rad);
 
     const double wheelOffsetPix = 0.1524 * METERS_TO_PIXELS;
 
     Point rotatedPoint;
     
     /* Draw the robot */
-    drawRotatedRectangle(FL_BLACK, xPix, yPix, widthPix, heightPix, angle);
+    drawRotatedRectangle(FL_BLACK, xPos_pix, yPos_pix, width_pix, height_pix, angle_rad);
 
     /* Draw the heading indicator */
-    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, 0, -heightPix/2 - 3);
-    drawRotatedTriangle(FL_RED, rotatedPoint.x, rotatedPoint.y, widthPix - 10, 10, angle);
+    rotatedPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, 0, -height_pix/2 - 3);
+    drawRotatedTriangle(FL_RED, rotatedPoint.x, rotatedPoint.y, width_pix - 10, 10, angle_rad);
 
     /* Draw the wheels */
-    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, wheelOffsetPix, 0);
-    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, heightPix-12, angle);
+    rotatedPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, wheelOffsetPix, 0);
+    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height_pix-12, angle_rad);
 
-    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, -wheelOffsetPix, 0);
-    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, heightPix-12, angle);
+    rotatedPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, -wheelOffsetPix, 0);
+    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height_pix-12, angle_rad);
+
+    if(showDistanceSensorLines){
+        printf("Show distance sensor\n");
+        fl_color(FL_GREEN); // Set the line color
+        fl_line_style(FL_SOLID, 2); // Set the line style to solid with width 5
+        fl_line(xPos_pix, yPos_pix, 200, 200); // Draw a line from (50, 50) to (200, 200)
+        fl_line_style(0); // Reset the line style to default
+    }
 }

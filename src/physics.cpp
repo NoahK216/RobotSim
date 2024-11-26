@@ -32,7 +32,7 @@ void masterPhysics(Robot *robot)
 
 void masterMotorTorque(Robot *robot, int mVoltsLeft, int mVoltsRight)
 {
-    /* angularAccel = torque/intertia */
+    /* angularAccel = torque/inertia */
     // robot->accelWheelLeft = robot->motorCurrentDraw(mVoltsLeft) / robot->wheelInertia;
     // robot->accelWheelRight = robot->motorCurrentDraw(mVoltsRight) / robot->wheelInertia;
 
@@ -88,6 +88,9 @@ void masterPose(Robot *robot)
 {
     /* Integrate velocity over time */
     robot->headingRad += robot->velAngular * DELTA_TIME;
-    robot->posX += robot->velX * DELTA_TIME;
-    robot->posY += robot->velY * DELTA_TIME;
+    robot->xPos_m += robot->velX * DELTA_TIME;
+    robot->yPos_m += robot->velY * DELTA_TIME;
+
+    //printf("\nX: %lf\tY: %lf, H: %lf\n", robot->xPos_m, robot->yPos_m, robot->headingRad);
+    //printf("X: %lf\tY: %lf, H: %lf\n\n", robot->xPos_pix(), robot->yPos_pix(), robot->headingDeg());
 }

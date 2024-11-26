@@ -6,7 +6,6 @@
 #include "Robot.hpp"
 #include <FL/Fl_Widget.H>
 
-#define METERS_TO_PIXELS 80
 
 class RobotWidget : public Fl_Widget {
 private:
@@ -14,11 +13,14 @@ private:
         double x;
         double y;
     };
-    double angle; // Rotation angle in radians
 
-    double xPix, yPix;
-    double widthPix, heightPix;
-    double wheelCenterDistPix;
+    /* Robot related information */
+    double angle_rad; // Rotation angle in radians
+    double xPos_pix, yPos_pix;
+    double width_pix, height_pix;
+    double wheelCenterDist_pix;
+
+    bool showDistanceSensorLines;
     
     Point rotatedOffsetPoint(double xPix, double yPix, double angle, double xOffset, double yOffset);
 
@@ -28,7 +30,9 @@ private:
     Robot *robot;
 
 public:
-    RobotWidget(Robot *robot, double x, double y, double width, double height);
+    RobotWidget(Robot *robot, double initial_x, double initial_y, double widget_width, double widget_height, bool showDistanceSensorLines);
+    void setRotationAngle(double newAngle);
+
     void draw() override;
 };
 

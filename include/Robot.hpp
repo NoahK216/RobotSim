@@ -11,12 +11,12 @@ private:
     double radians(double degrees);
 
 public:
-    Robot(double x, double y, double headingDeg, double wheelRadius_m, double m_kg)
+    Robot(double xPosInitial_m, double yPosInitial_m, double headingDeg, double wheelRadius_m, double m_kg)
     {
-        accelX = accelY = velX = velY = posX = posY = velLeftDt = velRightDt = 0;
+        accelX = accelY = velX = velY = velLeftDt = velRightDt = 0;
         
-        posX = x;
-        posY = y;
+        xPos_m = xPosInitial_m;
+        yPos_m = yPosInitial_m;
         
         headingRad = radians(headingDeg);
 
@@ -35,7 +35,8 @@ public:
 
     double accelX, accelY;
     double velX, velY;
-    double posX, posY;
+    double xPos_m, yPos_m;
+    double xPos_pix(), yPos_pix();
 
     const double staticFrictionCoefficient = 0.05;
     const double kineticFrictionCoefficient = 0.008;
@@ -59,6 +60,11 @@ public:
     double driveWheelRadius_m;
 
     double motorCurrentDraw(int milliVolts);
+
+    // Simulated front distance sensor reading
+    double frontDistanceMeasurement();
+    // Simulated rear distance sensor reading
+    double rearDistanceMeasurement();
     
 
     //double (double rpm);

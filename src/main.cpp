@@ -2,11 +2,13 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Rect.H>
 
 #include <math.h>
 
 #include "../include/Robot.hpp"
 #include "../include/RobotWidget.hpp"
+#include "../include/RectWidget.hpp"
 #include "../include/physics.hpp"
 
 #include "../include/debug.hpp"
@@ -26,7 +28,6 @@ void windowUpdate(void *data) {
     static unsigned i = 0;
 
     /* The loop */
-    //Fl_Double_Window *o = (Fl_Double_Window *)data;
     windowUpdatePackage *package = (windowUpdatePackage*)data;
     RobotWidget *robotGUI = package->robotGUI; // Define the extern RobotWidget declared in RobotWidget.hpp
     Robot *robot = package->robot; // Define the extern Robot declared in Robot.hpp
@@ -35,13 +36,13 @@ void windowUpdate(void *data) {
     /* Pass a pointer to the robot to masterPhysics */
     masterPhysics(robot);
 
-    if(DEBUG) printf("Acceleration\tL: %6.2f\tR: %6.2f\nVelocity\tX: %6.2f\tY: %6.2f\nPosition\tX: %6.2f\tY: %6.2f\n\n"
+    if(DEBUG) printf("Accel M/SS\tL: %6.2f\tR: %6.2f\nVelocity M/S\tX: %6.2f\tY: %6.2f\nPosition M\tX: %6.2f\tY: %6.2f\n\n"
         , robot->accelWheelLeft, robot->accelWheelRight
         , robot->velX, robot->velY
-        , robot->posX, robot->posY);
+        , robot->xPos_m, robot->yPos_m);
 
 
-    /* Finally, redraw */
+    /* Finally, redraw, RobotWidget has a pointer to robot */
     package->window->redraw();
 
     i++;
@@ -49,23 +50,29 @@ void windowUpdate(void *data) {
 }
 
 int main(int argc, char **argv) {
-    const double fieldLength = 10;
+    const double windowLength_m = 6;
+    const double fieldLength_m = 3.6576;
+    const double center_m = windowLength_m/2;
 
 
-    Fl_Double_Window *window = new Fl_Double_Window(fieldLength*METERS_TO_PIXELS, fieldLength*METERS_TO_PIXELS, "RobotSim");
-    /*TODO: Make constants more accurate to real world*/ 
+    Fl_Double_Window *window = new Fl_Double_Window(windowLength_m*METERS_TO_PIXELS, windowLength_m*METERS_TO_PIXELS, "RobotSim");
+    // TODO Make constants more accurate to real world
     
     /* Units:   Xm Ym Hdg  WheelRadM  Mkg*/
-    Robot robot(5, 5, 180, 0.0523875, 6.8);
+    Robot robot(center_m, center_m, 180, 0.0523875, 6.8);
 
-    /* Units:            Xm Ym   Xm  Ym*/
-    RobotWidget robotGUI(&robot, 5, 5, 0.4, 0.4);
+    /* Units:                    Xm  Ym*/
+    RobotWidget robotGUI(&robot, center_m * METERS_TO_PIXELS, center_m * METERS_TO_PIXELS, 0.4, 0.4, true);
 
     /* Create a package to pass to the window timeout */
     windowUpdatePackage package = {window, &robot, &robotGUI};
     
     /* Add the RobotWidget to the window */
     window->add(&robotGUI);
+
+    /* Add the field outline to the window */
+    RectangleWidget *rect = new RectangleWidget(center_m- fieldLength_m/2, center_m- fieldLength_m/2, fieldLength_m, fieldLength_m);
+    window->add(rect);
 
     Fl::add_timeout(0, windowUpdate, &package);
     window->end();

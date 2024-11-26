@@ -25,7 +25,8 @@ double Robot::normalForce()
 
 double Robot::headingDeg()
 {
-    return degrees(headingRad);
+    //TODO this might not be right
+    return remainder(degrees(headingRad), 360) + 180;
 }
 
 double Robot::motorCurrentDraw(int milliVolts)
@@ -39,4 +40,20 @@ double Robot::motorCurrentDraw(int milliVolts)
     const double pctVolt = abs(milliVolts) / 12000.0;
 
     return f1 + (1 + tanh(k*(pctVolt-a)))/2 * ((-4.125 * pctVolt) + 4.975 - f1);
+}
+
+double Robot::frontDistanceMeasurement(){
+    return 1.0;
+}
+
+double Robot::rearDistanceMeasurement(){
+    return 1.0;
+}
+
+double Robot::xPos_pix(){
+    return this->xPos_m * METERS_TO_PIXELS; 
+}
+
+double Robot::yPos_pix(){
+    return this->yPos_m * METERS_TO_PIXELS;
 }
