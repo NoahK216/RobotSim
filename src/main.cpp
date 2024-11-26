@@ -5,14 +5,14 @@
 
 #include <math.h>
 
-#include "include/Robot.hpp"
-#include "include/RobotWidget.hpp"
-#include "include/physics.hpp"
+#include "../include/Robot.hpp"
+#include "../include/RobotWidget.hpp"
+#include "../include/physics.hpp"
 
-#include "include/debug.hpp"
-#include "include/constants.hpp"
+#include "../include/debug.hpp"
+#include "../include/constants.hpp"
 
-#include "include/main.hpp"
+#include "../include/main.hpp"
 
 
 struct windowUpdatePackage{

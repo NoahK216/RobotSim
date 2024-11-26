@@ -8,7 +8,7 @@
 
 #include <math.h>
 
-#include "include/RobotWidget.hpp"
+#include "../include/RobotWidget.hpp"
 
 // Constructor for RobotWidget class, representing a widget for a robot
 RobotWidget::RobotWidget(double initial_x, double initial_y, double widget_width, double widget_height)

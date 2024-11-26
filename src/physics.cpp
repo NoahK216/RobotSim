@@ -3,13 +3,13 @@
 #include <FL/Fl.H>
 #include <math.h>
 
-#include "include/Robot.hpp"
-#include "include/sim.hpp"
+#include "../include/Robot.hpp"
+#include "../include/sim.hpp"
 
-#include "include/debug.hpp"
-#include "include/constants.hpp"
+#include "../include/debug.hpp"
+#include "../include/constants.hpp"
 
-#include "include/physics.hpp"
+#include "../include/physics.hpp"
 
 
 template <typename T> int signum(T val) {
@@ -33,8 +33,11 @@ void masterPhysics(Robot *robot)
 void masterMotorTorque(Robot *robot, int mVoltsLeft, int mVoltsRight)
 {
     /* angularAccel = torque/intertia */
-    robot->accelWheelLeft = robot->motorCurrentDraw(mVoltsLeft) / robot->wheelInertia;
-    robot->accelWheelRight = robot->motorCurrentDraw(mVoltsRight) / robot->wheelInertia;
+    // robot->accelWheelLeft = robot->motorCurrentDraw(mVoltsLeft) / robot->wheelInertia;
+    // robot->accelWheelRight = robot->motorCurrentDraw(mVoltsRight) / robot->wheelInertia;
+
+    robot->accelWheelLeft = mVoltsLeft * 15;
+    robot->accelWheelRight = mVoltsRight * 15;
 }
 
 
@@ -61,7 +64,7 @@ void wheelVelocity(Robot *robot)
     robot->velRightDt += robot->accelWheelRight  * DELTA_TIME * robot->driveWheelRadius_m;
 
     int mVolts = robot->velLeftDt*10000;
-    printf("MVolts: %d\tAmps: %.2f\n", mVolts, robot->motorCurrentDraw(mVolts));
+    // printf("MVolts: %d\tAmps: %.2f\n", mVolts, robot->motorCurrentDraw(mVolts));
 
     applyDampingForce(robot);
 

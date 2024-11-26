@@ -25,5 +25,5 @@ headersclean:
 
 # This is our master compiler rule to generate .o files.
 # It needs all 4 warnings
-%.o:%.cpp include/*.hpp
+%.o:src/%.cpp include/*.hpp
 	$(COMP) $(CPPFLAGS) -g -c $< -o $@

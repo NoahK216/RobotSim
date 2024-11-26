@@ -2,9 +2,9 @@
 
 #include <FL/Fl.H>
 
-#include "include/debug.hpp"
+#include "../include/debug.hpp"
 
-#include "include/sim.hpp"
+#include "../include/sim.hpp"
 
 void handleKeyboardInput(int *isW, int *isA, int *isS, int *isD)
 {

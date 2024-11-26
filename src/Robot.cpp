@@ -3,10 +3,10 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "include/debug.hpp"
-#include "include/constants.hpp"
+#include "../include/debug.hpp"
+#include "../include/constants.hpp"
 
-#include "include/Robot.hpp"
+#include "../include/Robot.hpp"
 
 double Robot::degrees(double radians)
 {
