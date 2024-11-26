@@ -11,21 +11,12 @@
 #include "../include/RobotWidget.hpp"
 
 // Constructor for RobotWidget class, representing a widget for a robot
-RobotWidget::RobotWidget(double initial_x, double initial_y, double widget_width, double widget_height)
+RobotWidget::RobotWidget(Robot *robot, double initial_x, double initial_y, double widget_width, double widget_height)
     : Fl_Widget(initial_x, initial_y, widget_width, widget_height), 
-      x(initial_x), 
-      y(initial_y), 
-      width(widget_width * METERS_TO_PIXELS), 
-      height(widget_height * METERS_TO_PIXELS), 
-      angle(0.0) 
+      robot(robot),
+      widthPix(widget_width * METERS_TO_PIXELS), 
+      heightPix(widget_height * METERS_TO_PIXELS)
 {}
-
-void RobotWidget::setPose(double newX, double newY, double newAngle)
-{
-    xPix = newX * METERS_TO_PIXELS;
-    yPix = newY * METERS_TO_PIXELS;
-    angle = newAngle;
-}
 
 void RobotWidget::drawRotatedRectangle(Fl_Color color, double x_pix, double y_pix, double width_pix, double height_pix, double angle)
 {
@@ -111,6 +102,10 @@ RobotWidget::Point RobotWidget::rotatedOffsetPoint(double xPix, double yPix, dou
 
 void RobotWidget::draw()
 {
+    xPix = this->robot->posX * METERS_TO_PIXELS;
+    yPix = this->robot->posY * METERS_TO_PIXELS;
+    angle = this->robot->headingRad;
+
     const double cosA = cos(angle);
     const double sinA = sin(angle);
 
@@ -119,16 +114,16 @@ void RobotWidget::draw()
     Point rotatedPoint;
     
     /* Draw the robot */
-    drawRotatedRectangle(FL_BLACK, xPix, yPix, width, height, angle);
+    drawRotatedRectangle(FL_BLACK, xPix, yPix, widthPix, heightPix, angle);
 
     /* Draw the heading indicator */
-    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, 0, -height/2 - 3);
-    drawRotatedTriangle(FL_RED, rotatedPoint.x, rotatedPoint.y, width - 10, 10, angle);
+    rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, 0, -heightPix/2 - 3);
+    drawRotatedTriangle(FL_RED, rotatedPoint.x, rotatedPoint.y, widthPix - 10, 10, angle);
 
     /* Draw the wheels */
     rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, wheelOffsetPix, 0);
-    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height-12, angle);
+    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, heightPix-12, angle);
 
     rotatedPoint = rotatedOffsetPoint(xPix, yPix, angle, -wheelOffsetPix, 0);
-    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height-12, angle);
+    drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, heightPix-12, angle);
 }

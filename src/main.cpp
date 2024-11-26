@@ -35,8 +35,6 @@ void windowUpdate(void *data) {
     /* Pass a pointer to the robot to masterPhysics */
     masterPhysics(robot);
 
-    /* Update the robots position after physics calulations */
-    robotGUI->setPose(robot->posX, robot->posY, robot->headingRad);
     if(DEBUG) printf("Acceleration\tL: %6.2f\tR: %6.2f\nVelocity\tX: %6.2f\tY: %6.2f\nPosition\tX: %6.2f\tY: %6.2f\n\n"
         , robot->accelWheelLeft, robot->accelWheelRight
         , robot->velX, robot->velY
@@ -61,7 +59,7 @@ int main(int argc, char **argv) {
     Robot robot(5, 5, 180, 0.0523875, 6.8);
 
     /* Units:            Xm Ym   Xm  Ym*/
-    RobotWidget robotGUI(5, 5, 0.4, 0.4);
+    RobotWidget robotGUI(&robot, 5, 5, 0.4, 0.4);
 
     /* Create a package to pass to the window timeout */
     windowUpdatePackage package = {window, &robot, &robotGUI};
