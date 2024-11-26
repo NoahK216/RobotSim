@@ -4,6 +4,7 @@
 #define ROBOT_WIDGET_HPP
 
 #include "Robot.hpp"
+#include "constants.hpp"
 #include <FL/Fl_Widget.H>
 
 
@@ -30,7 +31,14 @@ private:
     Robot *robot;
 
 public:
-    RobotWidget(Robot *robot, double initial_x, double initial_y, double widget_width, double widget_height, bool showDistanceSensorLines);
+    RobotWidget(Robot *robot, bool showDistanceSensorLines)
+    : Fl_Widget(robot->xPos_pix(), robot->yPos_pix(), robot->width_pix, robot->height_pix) {
+        this->robot = robot;
+        this->width_pix = robot->width_pix;
+        this->height_pix = robot->height_pix;
+        this->showDistanceSensorLines = showDistanceSensorLines;
+    }
+    
     void setRotationAngle(double newAngle);
 
     void draw() override;

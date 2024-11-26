@@ -4,6 +4,7 @@
 #define ROBOT_HPP
 
 #include <math.h>
+#include "constants.hpp"
 
 class Robot{
 private:
@@ -11,18 +12,21 @@ private:
     double radians(double degrees);
 
 public:
-    Robot(double xPosInitial_m, double yPosInitial_m, double headingDeg, double wheelRadius_m, double m_kg)
+    Robot(double xPosInitial_m, double yPosInitial_m, double width_m, double height_m, double headingInitial_deg, double wheelRadius_m, double m_kg)
     {
         accelX = accelY = velX = velY = velLeftDt = velRightDt = 0;
         
         xPos_m = xPosInitial_m;
         yPos_m = yPosInitial_m;
         
-        headingRad = radians(headingDeg);
+        headingRad = radians(headingInitial_deg);
 
         driveWheelRadius_m = wheelRadius_m;
 
         mass_kg = m_kg;
+
+        width_pix = width_m * METERS_TO_PIXELS;
+        height_pix = height_m * METERS_TO_PIXELS;
 
         wheelInertia = M_PI * wheelRadius_m / 4.0; // pi*R/4
 
@@ -35,8 +39,8 @@ public:
 
     double accelX, accelY;
     double velX, velY;
-    double xPos_m, yPos_m;
-    double xPos_pix(), yPos_pix();
+    double xPos_m, yPos_m, xPos_pix(), yPos_pix();
+    double width_pix, height_pix;
 
     const double staticFrictionCoefficient = 0.05;
     const double kineticFrictionCoefficient = 0.008;

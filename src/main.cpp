@@ -54,15 +54,12 @@ int main(int argc, char **argv) {
     const double fieldLength_m = 3.6576;
     const double center_m = windowLength_m/2;
 
-
     Fl_Double_Window *window = new Fl_Double_Window(windowLength_m*METERS_TO_PIXELS, windowLength_m*METERS_TO_PIXELS, "RobotSim");
-    // TODO Make constants more accurate to real world
-    
-    /* Units:   Xm Ym Hdg  WheelRadM  Mkg*/
-    Robot robot(center_m, center_m, 180, 0.0523875, 6.8);
 
-    /* Units:                    Xm  Ym*/
-    RobotWidget robotGUI(&robot, center_m * METERS_TO_PIXELS, center_m * METERS_TO_PIXELS, 0.4, 0.4, true);
+    /* Units:   Xm        Ym        Wm   Hm   Hdg  WheelRadM  Mkg */
+    Robot robot(center_m, center_m, 0.4, 0.4, 180, 0.0523875, 6.8);
+    
+    RobotWidget robotGUI(&robot, true);
 
     /* Create a package to pass to the window timeout */
     windowUpdatePackage package = {window, &robot, &robotGUI};

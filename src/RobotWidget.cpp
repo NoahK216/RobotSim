@@ -12,15 +12,6 @@
 #include "../include/RobotWidget.hpp"
 
 
-// Constructor for RobotWidget class, representing a widget for a robot
-RobotWidget::RobotWidget(Robot *robot, double initial_x, double initial_y, double widget_width, double widget_height, bool showDistanceSensorLines)
-    : Fl_Widget(robot->xPos_pix(), robot->yPos_pix(), widget_width, widget_height), 
-      robot(robot),
-      width_pix(widget_width * METERS_TO_PIXELS), 
-      height_pix(widget_height * METERS_TO_PIXELS),
-      showDistanceSensorLines(showDistanceSensorLines)
-{}
-
 void RobotWidget::drawRotatedRectangle(Fl_Color color, double x_pix, double y_pix, double width_pix, double height_pix, double angle)
 {
     fl_color(color);
