@@ -4,7 +4,9 @@
 #define ROBOT_HPP
 
 #include <math.h>
+#include "FieldPerimeter.hpp"
 #include "constants.hpp"
+
 
 class Robot{
 private:
@@ -12,8 +14,9 @@ private:
     double radians(double degrees);
 
 public:
-    Robot(double xPosInitial_m, double yPosInitial_m, double width_m, double height_m, double headingInitial_deg, double wheelRadius_m, double m_kg)
+    Robot(double xPosInitial_m, double yPosInitial_m, double width_m, double height_m, double headingInitial_deg, double wheelRadius_m, double m_kg, FieldPerimeter *field)
     {
+        this->field = field;
         accelX = accelY = velX = velY = velLeftDt = velRightDt = 0;
         
         xPos_m = xPosInitial_m;
@@ -69,6 +72,8 @@ public:
     double frontDistanceMeasurement();
     // Simulated rear distance sensor reading
     double rearDistanceMeasurement();
+
+    FieldPerimeter *field;
     
 
     //double (double rpm);

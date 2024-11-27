@@ -10,11 +10,6 @@
 
 class RobotWidget : public Fl_Widget {
 private:
-    struct Point{
-        double x;
-        double y;
-    };
-
     /* Robot related information */
     double angle_rad; // Rotation angle in radians
     double xPos_pix, yPos_pix;
@@ -27,6 +22,8 @@ private:
 
     void drawRotatedRectangle(Fl_Color color, double x_pix, double y_pix, double width_pix, double height_pix, double angle);
     void drawRotatedTriangle(Fl_Color color, double x_pix, double y_pix, double base_pix, double height_pix, double angle);
+
+    void drawDistanceSensorLines();
 
     Robot *robot;
 

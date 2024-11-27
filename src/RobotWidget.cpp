@@ -89,9 +89,26 @@ void RobotWidget::drawRotatedTriangle(Fl_Color color, double x_pix, double y_pix
     fl_end_complex_polygon();
 }
 
-RobotWidget::Point RobotWidget::rotatedOffsetPoint(double xPix, double yPix, double angle, double xOffset, double yOffset)
+Point RobotWidget::rotatedOffsetPoint(double xPix, double yPix, double angle, double xOffset, double yOffset)
 {
     return {xPix + cos(angle) * xOffset - sin(angle) * yOffset, yPix + sin(angle) * xOffset + cos(angle) * yOffset};
+}
+
+void RobotWidget::drawDistanceSensorLines(){
+    printf("Show distance sensor\n");
+    fl_color(FL_BLUE); // Set the line color
+    fl_line_style(FL_SOLID, 2); // Set the line style to solid with width 5
+
+    int frontLineLength = robot->frontDistanceMeasurement() * METERS_TO_PIXELS;
+    Point frontPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, 0, frontLineLength);
+
+    int backLineLength = robot->rearDistanceMeasurement() * METERS_TO_PIXELS;
+    Point backPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, 0, backLineLength);
+
+    fl_line(xPos_pix, yPos_pix, frontPoint.x, frontPoint.y);
+    fl_line(xPos_pix, yPos_pix, backPoint.x, backPoint.y);
+
+    fl_line_style(0); // Reset the line style to default
 }
 
 void RobotWidget::draw()
@@ -121,11 +138,7 @@ void RobotWidget::draw()
     rotatedPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, -wheelOffsetPix, 0);
     drawRotatedRectangle(FL_RED, rotatedPoint.x, rotatedPoint.y, 5, height_pix-12, angle_rad);
 
-    if(showDistanceSensorLines){
-        printf("Show distance sensor\n");
-        fl_color(FL_GREEN); // Set the line color
-        fl_line_style(FL_SOLID, 2); // Set the line style to solid with width 5
-        fl_line(xPos_pix, yPos_pix, 200, 200); // Draw a line from (50, 50) to (200, 200)
-        fl_line_style(0); // Reset the line style to default
-    }
+    if(showDistanceSensorLines)
+        drawDistanceSensorLines();
+    
 }

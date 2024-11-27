@@ -8,7 +8,7 @@
 
 #include "../include/Robot.hpp"
 #include "../include/RobotWidget.hpp"
-#include "../include/RectWidget.hpp"
+#include "../include/FieldPerimeter.hpp"
 #include "../include/physics.hpp"
 
 #include "../include/debug.hpp"
@@ -56,8 +56,12 @@ int main(int argc, char **argv) {
 
     Fl_Double_Window *window = new Fl_Double_Window(windowLength_m*METERS_TO_PIXELS, windowLength_m*METERS_TO_PIXELS, "RobotSim");
 
+    /* Add the field outline to the window */
+    FieldPerimeter *field = new FieldPerimeter(center_m- fieldLength_m/2, center_m- fieldLength_m/2, fieldLength_m, fieldLength_m);
+    window->add(field);
+
     /* Units:   Xm        Ym        Wm   Hm   Hdg  WheelRadM  Mkg */
-    Robot robot(center_m, center_m, 0.4, 0.4, 180, 0.0523875, 6.8);
+    Robot robot(center_m, center_m, 0.4, 0.4, 180, 0.0523875, 6.8, field);
     
     RobotWidget robotGUI(&robot, true);
 
@@ -67,9 +71,7 @@ int main(int argc, char **argv) {
     /* Add the RobotWidget to the window */
     window->add(&robotGUI);
 
-    /* Add the field outline to the window */
-    RectangleWidget *rect = new RectangleWidget(center_m- fieldLength_m/2, center_m- fieldLength_m/2, fieldLength_m, fieldLength_m);
-    window->add(rect);
+
 
     Fl::add_timeout(0, windowUpdate, &package);
     window->end();
