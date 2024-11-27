@@ -8,6 +8,7 @@
 
 #include <math.h>
 
+#include "../include/debug.hpp"
 #include "../include/constants.hpp"
 #include "../include/RobotWidget.hpp"
 
@@ -95,15 +96,17 @@ Point RobotWidget::rotatedOffsetPoint(double xPix, double yPix, double angle, do
 }
 
 void RobotWidget::drawDistanceSensorLines(){
-    printf("Show distance sensor\n");
     fl_color(FL_BLUE); // Set the line color
     fl_line_style(FL_SOLID, 2); // Set the line style to solid with width 5
 
     int frontLineLength = robot->frontDistanceMeasurement() * METERS_TO_PIXELS;
-    Point frontPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, 0, frontLineLength);
+    Point frontPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, 0, -frontLineLength);
 
     int backLineLength = robot->rearDistanceMeasurement() * METERS_TO_PIXELS;
     Point backPoint = rotatedOffsetPoint(xPos_pix, yPos_pix, angle_rad, 0, backLineLength);
+
+    if(DEBUG)
+        printf("Front Distance M: %f\nRear Distance M: %f\n\n", robot->frontDistanceMeasurement(), robot->rearDistanceMeasurement());
 
     fl_line(xPos_pix, yPos_pix, frontPoint.x, frontPoint.y);
     fl_line(xPos_pix, yPos_pix, backPoint.x, backPoint.y);

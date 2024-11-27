@@ -1,7 +1,7 @@
 #Authored by Noah Klein
 
 COMP=g++
-CPPFLAGS=-std=c++11 -pedantic -Wformat -Wreturn-type 
+CPPFLAGS=-std=c++17 -pedantic -Wformat -Wreturn-type 
 FL_LINK_FLAGS=`fltk-config --ldflags`
 
 all: headers main

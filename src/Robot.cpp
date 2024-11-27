@@ -4,6 +4,7 @@
 #include <algorithm> 
 #include <cmath>
 #include <limits>
+#include <stdio.h>
 
 #include "../include/debug.hpp"
 #include "../include/constants.hpp"
@@ -53,32 +54,64 @@ double Robot::yPos_pix(){
 }
 
 
-// Function to calculate the distance from the origin to the nearest intersection with a rectangle
+// Function to calculate the distance from the origin to the nearest intersection with a rectangle (Thank you ChatGPT)
 double calculateRayIntersectionDistance(double x0, double y0, double theta, 
                                         double x_min, double x_max, double y_min, double y_max) {
-    // Calculate distances to the four boundaries (left, right, bottom, top)
-    double d_left = (cos(theta) != 0) ? (x_min - x0) / cos(theta) : std::numeric_limits<double>::infinity();
-    double d_right = (cos(theta) != 0) ? (x_max - x0) / cos(theta) : std::numeric_limits<double>::infinity();
-    double d_bottom = (sin(theta) != 0) ? (y_min - y0) / sin(theta) : std::numeric_limits<double>::infinity();
-    double d_top = (sin(theta) != 0) ? (y_max - y0) / sin(theta) : std::numeric_limits<double>::infinity();
+    // Calculate the ray's direction
+    double dx = std::cos(theta);
+    double dy = std::sin(theta);
 
-    // Only consider valid distances where the ray intersects the boundaries in the correct direction
-    if (cos(theta) < 0) d_left = std::max(d_left, 0.0);  // Ray going left
-    else d_right = std::max(d_right, 0.0);  // Ray going right
+    // Initialize distances to infinity
+    double d_min = std::numeric_limits<double>::infinity();
 
-    if (sin(theta) < 0) d_bottom = std::max(d_bottom, 0.0);  // Ray going down
-    else d_top = std::max(d_top, 0.0);  // Ray going up
+    // Intersection with left (x = x_min)
+    if (dx != 0) { // Avoid division by zero
+        double d_left = (x_min - x0) / dx;
+        double y_intersect = y0 + d_left * dy;
+        if (d_left > 0 && y_intersect >= y_min && y_intersect <= y_max) { // Check valid intersection
+            d_min = std::min(d_min, d_left);
+        }
+    }
 
-    // Return the minimum positive distance to an intersection point
-    return std::min({d_left, d_right, d_bottom, d_top});
+    // Intersection with right (x = x_max)
+    if (dx != 0) { // Avoid division by zero
+        double d_right = (x_max - x0) / dx;
+        double y_intersect = y0 + d_right * dy;
+        if (d_right > 0 && y_intersect >= y_min && y_intersect <= y_max) { // Check valid intersection
+            d_min = std::min(d_min, d_right);
+        }
+    }
+
+    // Intersection with bottom (y = y_min)
+    if (dy != 0) { // Avoid division by zero
+        double d_bottom = (y_min - y0) / dy;
+        double x_intersect = x0 + d_bottom * dx;
+        if (d_bottom > 0 && x_intersect >= x_min && x_intersect <= x_max) { // Check valid intersection
+            d_min = std::min(d_min, d_bottom);
+        }
+    }
+
+    // Intersection with top (y = y_max)
+    if (dy != 0) { // Avoid division by zero
+        double d_top = (y_max - y0) / dy;
+        double x_intersect = x0 + d_top * dx;
+        if (d_top > 0 && x_intersect >= x_min && x_intersect <= x_max) { // Check valid intersection
+            d_min = std::min(d_min, d_top);
+        }
+    }
+
+    return d_min;
 }
 
 
+// VEX Distance sensor range is 20mm to 2,000mm
+
 double Robot::frontDistanceMeasurement(){
-    return calculateRayIntersectionDistance(xPos_m, yPos_m, headingRad, field->leftX, field->rightX, field->topY, field->bottomY);
-    //return 1.5;
+    double realDistance = calculateRayIntersectionDistance(xPos_m, yPos_m, headingRad - M_PI/2, field->leftX, field->rightX, field->topY, field->bottomY);
+    return std::clamp(realDistance, 0.02, 2.0); 
 }
 
 double Robot::rearDistanceMeasurement(){
-    return 1.0;
+    double realDistance = calculateRayIntersectionDistance(xPos_m, yPos_m, headingRad + M_PI/2, field->leftX, field->rightX, field->topY, field->bottomY);
+    return std::clamp(realDistance, 0.02, 2.0);
 }
